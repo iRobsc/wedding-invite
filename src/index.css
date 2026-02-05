@@ -1,0 +1,808 @@
+:root {
+  /* Colors */
+  --color-gold: #D4AF37;
+  --color-gold-light: #F4E5B0;
+  --color-cream: #F9F9F5;
+  --color-navy: #0F172A;
+  --color-text-main: #334155;
+  --color-text-light: #64748B;
+  --color-white: #FFFFFF;
+
+  /* Typography */
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Lato', sans-serif;
+  --font-script: 'Alex Brush', cursive;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 2rem;
+  --spacing-lg: 4rem;
+  --spacing-xl: 8rem;
+
+  /* Transitions */
+  --transition-fast: 0.3s ease;
+  --transition-slow: 0.8s ease-in-out;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100vh;
+  overflow: hidden;
+  /* visual fix for double scrollbar */
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: var(--font-body);
+  background-color: var(--color-cream);
+  color: var(--color-text-main);
+  line-height: 1.6;
+  overflow: hidden;
+  /* visual fix for double scrollbar */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  color: var(--color-navy);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color var(--transition-fast);
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+/* Utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-sm);
+}
+
+.text-gold {
+  color: var(--color-gold);
+}
+
+.text-navy {
+  color: var(--color-navy);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.section-padding {
+  padding: var(--spacing-xl) 0;
+}
+
+/* Animations */
+.fade-in-section {
+  opacity: 0;
+  /* Removed transform (translateY/scale) to fix scroll lag. 
+     Animating large layers with box-shadows is too expensive on scroll. */
+  transition: opacity 1.2s ease-out;
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+}
+
+/* Logic-controlled reveal (ignored by IntersectionObserver) */
+.chained-reveal {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+.chained-reveal.is-visible {
+  opacity: 1;
+}
+
+/* Arrow Animation Keyframes - GPU Accelerated */
+@keyframes drawMask {
+  from {
+    transform: scaleY(0.38);
+  }
+
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.draw-active {
+  animation: drawMask 3.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.delay-100 {
+  transition-delay: 0.1s;
+}
+
+.delay-200 {
+  transition-delay: 0.2s;
+}
+
+.delay-300 {
+  transition-delay: 0.3s;
+}
+
+.delay-400 {
+  transition-delay: 0.4s;
+}
+
+.delay-500 {
+  transition-delay: 0.5s;
+}
+
+/* Component Wrappers - Fix for Scroll Snap */
+.landing-page,
+.venue-section {
+  display: contents;
+}
+
+/* Content Sections */
+.content-section,
+.landing-page .hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg) var(--spacing-sm);
+  background-color: var(--color-cream);
+  scroll-snap-align: start;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  max-width: 1200px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .content-container {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: var(--spacing-xl);
+  }
+
+  .content-container.reverse {
+    flex-direction: row-reverse;
+  }
+}
+
+/* Text Content */
+.text-content {
+  /* Flatten for mobile ordering */
+  display: contents;
+}
+
+.text-content>* {
+  text-align: center;
+  /* Center text on mobile */
+}
+
+@media (min-width: 768px) {
+  .text-content {
+    display: block;
+    flex: 1;
+    max-width: 500px;
+    text-align: left;
+  }
+
+  .text-content>* {
+    text-align: inherit;
+  }
+
+  .content-container.reverse .text-content {
+    text-align: right;
+  }
+}
+
+.text-content h2 {
+  font-family: var(--font-script);
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-navy);
+
+  /* Mobile: Title First */
+  order: -2;
+}
+
+.text-content .subtitle {
+  color: var(--color-gold);
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 1.5rem;
+
+  /* Mobile: Subtitle Second */
+  order: -1;
+  margin-bottom: 1rem;
+}
+
+.text-content p {
+  color: var(--color-text-main);
+  font-size: 1.15rem;
+
+  /* Mobile: Description Last */
+  order: 1;
+  padding: 0 0.5rem;
+}
+
+
+/* Photo Frames */
+.photo-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.photo-frame {
+  max-width: 100%;
+  width: 450px;
+  /* Fixed width for consistency */
+  height: auto;
+  border: 15px solid white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.rotate-left .photo-frame {
+  transform: rotate(-3deg);
+}
+
+.rotate-right .photo-frame {
+  transform: rotate(2deg);
+}
+
+@media (max-width: 767px) {
+
+  /* Zero Horizontal Padding for Edge-to-Edge Image */
+  .content-section,
+  .landing-page .hero {
+    padding: var(--spacing-sm) 0;
+  }
+
+  /* Compact gap */
+  .content-container {
+    gap: 0.5rem;
+  }
+
+  /* Maximize image wrapper width */
+  .photo-wrapper {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  /* Maximize image - Instagram Style */
+  .photo-frame {
+    width: 100%;
+    max-height: 45vh;
+    /* Keep it shorter to fit text */
+    object-fit: cover;
+    display: block;
+    /* Remove inline-block spacing */
+
+    /* Remove "frame" look */
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+
+    margin: 0;
+  }
+
+  /* Reset Rotation */
+  .rotate-left .photo-frame,
+  .rotate-right .photo-frame {
+    transform: none;
+  }
+
+  /* Compact typography with padding since container has none */
+  .text-content h2 {
+    font-size: 2.2rem;
+    margin-bottom: 0.2rem;
+    padding: 0 var(--spacing-sm);
+  }
+
+  .text-content .subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    padding: 0 var(--spacing-sm);
+  }
+
+  .text-content p {
+    font-size: 0.95rem;
+    line-height: 1.35;
+    padding: 0 var(--spacing-sm);
+  }
+}
+
+
+
+/* Image Carousel Styles */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+.carousel-scroller {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
+.carousel-scroller::-webkit-scrollbar {
+  display: none;
+  /* Chrome/Safari */
+}
+
+.carousel-image {
+  flex-shrink: 0;
+  width: 100%;
+  height: 45vh;
+  object-fit: cover;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  /* Force stop at each image (TikTok feel) */
+}
+
+/* 1/x Badge */
+.carousel-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(30, 30, 30, 0.7);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* Pagination Dots Container (Anchor) */
+.carousel-dots-container {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  width: 0;
+  /* Acts as a centered anchor point */
+  height: 20px;
+  overflow: visible;
+  /* Allow dots to spill out left/right */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* Track extends from here */
+  z-index: 10;
+}
+
+/* Sliding Track */
+.carousel-dots-track {
+  display: flex;
+  align-items: center;
+  /* Transform is handled by JS for centering */
+  will-change: transform;
+}
+
+/* Fixed Cell Wrapper */
+.carousel-dot-wrapper {
+  width: 14px;
+  /* Matches JS CELL_WIDTH */
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Inner Dot (Visual) */
+.carousel-dot-inner {
+  border-radius: 50%;
+  /* Size and Color managed by JS */
+  will-change: width, height, background-color, opacity;
+}
+
+/* Scatter Photo Layout */
+.scatter-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  width: 100%;
+  max-width: 900px;
+  /* Increased from 600px for wider spread */
+  /* Constrain width to force wrapping */
+  height: auto;
+  min-height: 50vh;
+  position: relative;
+  padding: 2rem;
+  gap: 20px;
+  /* Use gap for spacing instead of margins */
+}
+
+.scatter-item-wrapper {
+  position: relative;
+  /* Width is controlled by specific classes below */
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), z-index 0s 0.5s;
+}
+
+/* Dynamic Sizes based on count */
+
+/* 1 Image: Huge */
+.scatter-container.scatter-single .scatter-item-wrapper {
+  width: 95%;
+  max-width: 600px;
+  margin: 0;
+}
+
+.scatter-container.scatter-single .scatter-item-wrapper:nth-child(1) {
+  transform: rotate(-2deg);
+}
+
+/* 2-3 Images: Large, 2 per row */
+.scatter-container.scatter-few .scatter-item-wrapper {
+  width: 48%;
+  margin: 0;
+}
+
+/* 4-8 Images: Medium, 3 per row */
+.scatter-container.scatter-medium .scatter-item-wrapper {
+  width: 30%;
+  margin: 0;
+}
+
+/* 9+ Images: Small, 4 per row */
+.scatter-container.scatter-many .scatter-item-wrapper {
+  width: 22%;
+  margin: 0;
+}
+
+.scatter-photo {
+  width: 100%;
+  height: auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border: 8px solid white;
+  /* Thinner border for small scattered photos */
+  transition: box-shadow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: box-shadow;
+}
+
+.scatter-item-wrapper:hover .scatter-photo {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.22);
+  /* Deep lift shadow */
+}
+
+/* Pseudo-random rotations for "pile" effect */
+.scatter-item-wrapper:nth-child(odd) {
+  transform: rotate(-4deg) translateY(5px);
+  z-index: 1;
+}
+
+.scatter-item-wrapper:nth-child(even) {
+  transform: rotate(3deg) translateY(-5px);
+  z-index: 2;
+}
+
+.scatter-item-wrapper:nth-child(3n) {
+  transform: rotate(6deg) translateX(5px);
+  z-index: 3;
+}
+
+.scatter-item-wrapper:nth-child(4n) {
+  transform: rotate(-5deg) translateX(-5px);
+  z-index: 1;
+}
+
+.scatter-item-wrapper:nth-child(5n) {
+  transform: rotate(2deg) translateY(8px);
+  z-index: 2;
+}
+
+/* Hover Interaction: Bring to front */
+.scatter-item-wrapper:hover {
+  z-index: 100;
+  /* Pop to top */
+  transform: scale(1.05) rotate(0deg);
+  /* Straighten and zoom */
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), z-index 0s;
+}
+
+
+/* Responsive Toggling */
+.mobile-view {
+  display: none;
+}
+
+.desktop-view {
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .mobile-view {
+    display: block;
+    width: 100%;
+  }
+
+  .desktop-view {
+    display: none;
+  }
+
+  /* Carousel container needs to assume the space of the photo-wrapper */
+  .photo-wrapper {
+    display: none;
+    /* Hide old wrapper on mobile */
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               Image Viewer                                 */
+/* -------------------------------------------------------------------------- */
+
+.image-viewer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2000;
+  background-color: rgba(255, 255, 255, 0.4);
+  /* Slight white tint */
+  backdrop-filter: blur(15px);
+  /* Strong blur for "behind glass" feel */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.image-viewer-overlay.closing {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+.viewer-content {
+  position: relative;
+  /* Width/Height controlled by JS inline styles */
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Removed transition: width/height to stop size animation */
+  /* will-change removed as no longer ensuring smooth resize */
+
+  /* Fix corner radius during transition */
+  border-radius: 4px;
+  overflow: hidden;
+  clip-path: inset(0);
+  /* Strict masking to prevent bleed */
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  /* Move shadow to container */
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Track System */
+.viewer-viewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  /* Ensure image stays within bounds */
+}
+
+.viewer-track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  /* Transform is handled inline for sliding */
+  /* Transition handled inline for mount fix */
+  will-change: transform;
+}
+
+.viewer-counter {
+  position: absolute;
+  bottom: 20px;
+  /* Moved inside frame */
+  color: white;
+  /* White text */
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.3);
+  /* Subtle pill background for readability */
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.viewer-slide {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+  /* Critical: prevents slides from squeezing provided width */
+  overflow: hidden;
+  /* Ensure oversized image doesn't spill */
+  /* Width is now set inline by JS */
+}
+
+.viewer-image {
+  width: 100%;
+  /* Strict fit to animated parent */
+  height: 100%;
+  /* Strict fit */
+  margin: 0;
+  object-fit: cover;
+  /* Cover ensures no 1px gaps; container is already AR-locked */
+  backface-visibility: hidden;
+  /* Fix for 1px bleed */
+}
+
+.viewer-btn {
+  position: absolute;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  width: 80px;
+  height: 80px;
+  font-size: 6rem;
+  /* Even larger for impact */
+  line-height: 0;
+  padding-bottom: 15px;
+  /* Center adjustment */
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+  z-index: 25;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
+}
+
+.viewer-btn:hover {
+  background: transparent;
+  transform: scale(1.1);
+  box-shadow: none;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.viewer-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: auto;
+  height: auto;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  color: white;
+  /* White X */
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  /* Subtle dark shadow */
+  font-size: 3rem;
+  padding: 0;
+  line-height: 0.8;
+  opacity: 0.8;
+  z-index: 30;
+}
+
+.viewer-close:hover {
+  background: transparent;
+  opacity: 1;
+  box-shadow: none;
+  transform: none;
+  color: white;
+}
+
+/* Put close button inside/near image on smaller desktops if space is tight */
+@media (max-width: 1024px) {
+  .viewer-close {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+.viewer-prev {
+  left: 20px;
+  /* moved inside */
+}
+
+.viewer-next {
+  right: 20px;
+  /* moved inside */
+}
+
+/* Position arrows inside viewport on small screens */
+@media (max-width: 1200px) {
+  .viewer-prev {
+    left: 10px;
+  }
+
+  .viewer-next {
+    right: 10px;
+  }
+}
+
+
+/* Old counter blocked removed */
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+/* Wedding Car Silhouette */
+/* Wedding Car Silhouette */
+.car-icon {
+  width: 50px;
+  /* Half size */
+  height: auto;
+  margin-top: 24px;
+  opacity: 0;
+  /* Hidden initially */
+  transform: scaleX(-1) translateY(10px);
+  /* Flip + Subtle slide up */
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* Staggered reveal when parent text becomes visible */
+.text-content.is-visible .car-icon {
+  opacity: 0.8;
+  /* Slightly transparent black */
+  transform: scaleX(-1) translateY(0);
+  transition-delay: 0.5s;
+  /* Wait for text to appear */
+}

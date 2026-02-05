@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <filter id="watercolor-blue" x="-50%" y="-50%" width="200%" height="200%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" />
+      <feGaussianBlur stdDeviation="1" />
+    </filter>
+    <radialGradient id="grad-blue" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#E3F2FD" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#90CAF9" stop-opacity="0.7"/>
+    </radialGradient>
+  </defs>
+  <g filter="url(#watercolor-blue)">
+    <!-- Hydrangea Cluster -->
+    <g transform="translate(20,20)">
+      <circle cx="60" cy="60" r="15" fill="url(#grad-blue)" />
+      <circle cx="85" cy="50" r="18" fill="url(#grad-blue)" />
+      <circle cx="100" cy="70" r="16" fill="url(#grad-blue)" />
+      <circle cx="70" cy="85" r="17" fill="url(#grad-blue)" />
+      <circle cx="50" cy="75" r="15" fill="url(#grad-blue)" />
+      <circle cx="120" cy="90" r="14" fill="url(#grad-blue)" />
+      <circle cx="90" cy="100" r="16" fill="url(#grad-blue)" />
+    </g>
+    
+    <!-- Greenery -->
+    <path fill="#C8E6C9" d="M110,110 Q140,140 100,160 Q70,140 110,110" opacity="0.6"/>
+    <path fill="#A5D6A7" d="M40,90 Q10,120 50,130 Q70,100 40,90" opacity="0.6"/>
+  </g>
+</svg>

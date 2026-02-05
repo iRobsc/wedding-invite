@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <filter id="watercolor-purple" x="-50%" y="-50%" width="200%" height="200%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" />
+      <feGaussianBlur stdDeviation="0.8" />
+    </filter>
+    <linearGradient id="grad-stem" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DCEDC8" />
+      <stop offset="100%" stop-color="#AED581" />
+    </linearGradient>
+  </defs>
+  <g filter="url(#watercolor-purple)">
+    <!-- Stems -->
+    <path stroke="url(#grad-stem)" stroke-width="3" fill="none" d="M120,180 Q110,140 130,80" />
+    <path stroke="url(#grad-stem)" stroke-width="3" fill="none" d="M80,180 Q90,130 70,70" />
+    
+    <!-- Lavender Buds Left -->
+    <ellipse cx="70" cy="70" rx="4" ry="6" fill="#E1BEE7" opacity="0.9" />
+    <ellipse cx="72" cy="85" rx="5" ry="7" fill="#CE93D8" opacity="0.8" />
+    <ellipse cx="68" cy="100" rx="5" ry="7" fill="#BA68C8" opacity="0.7" />
+    <ellipse cx="73" cy="115" rx="4" ry="6" fill="#E1BEE7" opacity="0.8" />
+
+    <!-- Lavender Buds Right -->
+    <ellipse cx="130" cy="80" rx="4" ry="6" fill="#D1C4E9" opacity="0.9" />
+    <ellipse cx="128" cy="95" rx="5" ry="7" fill="#B39DDB" opacity="0.8" />
+    <ellipse cx="132" cy="110" rx="5" ry="7" fill="#9575CD" opacity="0.7" />
+    
+    <!-- Sprigs -->
+    <path fill="#C5E1A5" d="M100,150 Q120,130 140,150 Q120,170 100,150" opacity="0.7"/>
+  </g>
+</svg>
