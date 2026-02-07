@@ -38,7 +38,7 @@ const CarScrollPath = ({ scrollContainerRef, isVisible = false, onScrollStart, o
                 initialOpacity={1}        // Reverted to 1 as requested
                 strokeDasharray="5, 5"    // Dotted
                 leadOffset={5}            // Car leads line slightly
-                duration={4000}           // Slower animation
+                duration={6000}           // Slower animation
             >
                 {/* CAR ICON */}
                 {/* Centered Geometry: translate(-128, -128) */}

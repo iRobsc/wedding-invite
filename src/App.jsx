@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import LandingPage from './components/LandingPage';
 import VenueSection from './components/VenueSection';
 import ScrollArrow from './components/ScrollArrow';
@@ -30,6 +30,7 @@ const PRELOAD_ASSETS = [
 function App() {
   const containerRef = useRef(null);
   const [animationStep, setAnimationStep] = useState(0);
+  const [introFinished, setIntroFinished] = useState(false);
 
   // Preload Images
   const isLoading = usePreloader(PRELOAD_ASSETS); // Re-enabled after fixing layout bug
@@ -42,52 +43,75 @@ function App() {
   const handleCarComplete = useCallback(() => setAnimationStep(prev => Math.max(prev, 4)), []);
   const handleVenueTextComplete = useCallback(() => setAnimationStep(prev => Math.max(prev, 5)), []);
 
+  const handleIntroComplete = useCallback(() => setIntroFinished(true), []);
+
+  // Allow user to bypass intro wait by scrolling
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      if (container.scrollTop > 10 && !introFinished) {
+        setIntroFinished(true);
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [introFinished]);
+
   return (
     <>
       <div
         ref={containerRef}
         className="app-container"
         style={{
-          scrollSnapType: 'y mandatory',
+          scrollBehavior: 'smooth',
           height: '100vh',
           overflowY: isLoading ? 'hidden' : 'scroll', // Lock scroll while loading
           position: 'relative',
         }}
       >
-        <LandingPage isLoading={isLoading} />
-        <div
-          className="desktop-view"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            pointerEvents: 'none',
-            opacity: isLoading ? 0 : 1, // Hide arrow until loaded
-            transition: 'opacity 1.5s ease-in-out' // Sync with background fade
-          }}
-        >
-          <ScrollArrow
-            scrollContainerRef={containerRef}
-            onAnimationComplete={handleArrowComplete}
+        <div style={{ position: 'relative', minHeight: '100%' }}>
+          <LandingPage
+            isLoading={isLoading}
+            onIntroComplete={handleIntroComplete}
           />
-          <CarScrollPath
+          <div
+            className="desktop-view"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+              opacity: !isLoading && introFinished ? 1 : 0, // Wait for intro to finish
+              transition: 'opacity 1.5s ease-in-out' // Sync with background fade
+            }}
+          >
+            <ScrollArrow
+              scrollContainerRef={containerRef}
+              onAnimationComplete={handleArrowComplete}
+            />
+            <CarScrollPath
+              scrollContainerRef={containerRef}
+              isVisible={animationStep >= 3}
+              onScrollStart={handleCarScrollStart}
+              onComplete={handleCarComplete}
+            />
+          </div>
+          <VenueSection
+            animationStep={animationStep}
+            onTextComplete={handleTextComplete}
+            onImagesComplete={handleImagesComplete}
             scrollContainerRef={containerRef}
-            isVisible={animationStep >= 3}
-            onScrollStart={handleCarScrollStart}
-            onComplete={handleCarComplete}
           />
         </div>
-        <VenueSection
-          animationStep={animationStep}
-          onTextComplete={handleTextComplete}
-          onImagesComplete={handleImagesComplete}
-          onVenueTextComplete={handleVenueTextComplete}
-        />
       </div>
     </>
   )
 }
 
 export default App
+

@@ -30,6 +30,7 @@ const ScrollArrow = ({ scrollContainerRef, onAnimationComplete }) => {
                 strokeDasharray={null} // Solid line
                 leadOffset={5}         // Arrow ahead of line (Gap fixed by user preference)
                 useLegacyStyle={true}  // Restore CSS transform behavior
+                duration={4000}        // Slower animation
             >
                 {/* ARROW ICON */}
                 {/* No transform needed here, handled by parent wrapper */}

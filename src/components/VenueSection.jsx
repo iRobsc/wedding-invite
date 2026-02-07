@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import ranasExterior from '../assets/ranas_exterior.png';
 import ranasInterior from '../assets/ranas_interior.png';
 import fasternaKyrka from '../assets/fasterna_kyrka.png';
@@ -8,13 +8,11 @@ import flowerReception from '../assets/flower_reception.svg';
 import weddingCar from '../assets/wedding_car.svg';
 import ImageCarousel from './ImageCarousel';
 import PhotoScatter from './PhotoScatter';
+import FootstepPath from './FootstepPath';
+import useIntersectionObserver from '../hooks/useIntersectionObserver';
 
-const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onVenueTextComplete }) => {
-    const observerRef = useRef(null);
-    const textRef = useRef(null);
-
+const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onVenueTextComplete, scrollContainerRef }) => {
     // Image Constants - Single Source of Truth
-    // Note: Fade-in classes applied to desktop-view wrappers only to preserve mobile behavior
     const ceremonyImages = [
         fasternaKyrka, fasternaKyrka, fasternaKyrka
     ]; // 3 images
@@ -27,48 +25,13 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
         ranasInterior, ranasInterior
     ]; // 2 images
 
-    // 1. Trigger Text Completion (Overlap)
-    useEffect(() => {
-        if (animationStep === 1 && onTextComplete) {
-            const timer = setTimeout(() => {
-                onTextComplete();
-            }, 200); // 200ms overlap delay
-            return () => clearTimeout(timer);
-        }
-    }, [animationStep, onTextComplete]);
-
-    // 2. Trigger Image Completion (Chain Car)
-    useEffect(() => {
-        if (animationStep === 2 && onImagesComplete) {
-            const timer = setTimeout(() => {
-                onImagesComplete();
-            }, 200); // Wait 200ms (small delay) for images to fade in before showing Car
-            return () => clearTimeout(timer);
-        }
-    }, [animationStep, onImagesComplete]);
-
-    // 3. Trigger Venue Text Completion (Chain Venue Images)
-    useEffect(() => {
-        if (animationStep === 4 && onVenueTextComplete) {
-            const timer = setTimeout(() => {
-                onVenueTextComplete();
-            }, 400); // Reading time for text before images
-            return () => clearTimeout(timer);
-        }
-    }, [animationStep, onVenueTextComplete]);
-
-    // ... (Observer) ...
-
-    // Helper for Ceremony Visibility
-    // Step 1: Text Visible
-    // Step 2: Image Visible
-    const isTextVisible = animationStep >= 1;
-    const isImageVisible = animationStep >= 2;
-    // Step 3: Car Start (Handled in App)
-    // Step 4: Car Complete -> Reveal Venue Text
-    // Step 5: Venue Text Complete -> Reveal Venue Images
-    const isVenueTextVisible = animationStep >= 4;
-    const isVenueImageVisible = animationStep >= 5;
+    // Intersection Observer hooks for scroll-based visibility
+    const [ceremonyTextRef, isCeremonyTextVisible] = useIntersectionObserver({ threshold: 0.3 });
+    const [ceremonyImageRef, isCeremonyImageVisible] = useIntersectionObserver({ threshold: 0.2 });
+    const [venueTextRef, isVenueTextVisible] = useIntersectionObserver({ threshold: 0.3 });
+    const [venueImageRef, isVenueImageVisible] = useIntersectionObserver({ threshold: 0.2 });
+    const [receptionTextRef, isReceptionTextVisible] = useIntersectionObserver({ threshold: 0.3 });
+    const [receptionImageRef, isReceptionImageVisible] = useIntersectionObserver({ threshold: 0.2 });
 
     return (
         <div className="venue-section">
@@ -76,8 +39,9 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
             <div className="content-section">
                 <div className="content-container">
                     <div
-                        className={`photo-wrapper rotate-left desktop-view chained-reveal ${isImageVisible ? 'is-visible' : ''}`}
-                        style={{ transitionDelay: '0s' }} // Remove standard Delay
+                        ref={ceremonyImageRef}
+                        className={`photo-wrapper rotate-left desktop-view chained-reveal ${isCeremonyImageVisible ? 'is-visible' : ''}`}
+                        style={{ transitionDelay: '0.4s' }} // Image appears 400ms after text
                     >
                         <PhotoScatter
                             images={ceremonyImages}
@@ -93,9 +57,9 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
                     </div>
 
                     <div
-                        ref={textRef}
-                        className={`text-content chained-reveal ${isTextVisible ? 'is-visible' : ''}`}
-                        style={{ transitionDelay: '0s' }}
+                        ref={ceremonyTextRef}
+                        className={`text-content chained-reveal ${isCeremonyTextVisible ? 'is-visible' : ''}`}
+                        style={{ transitionDelay: '0s' }} // Text appears first
                     >
                         <h2 className="text-navy">Ceremony</h2>
                         <p className="subtitle text-gold">Fasterna Kyrka</p>
@@ -110,7 +74,11 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
             {/* Exterior Section */}
             <div className="content-section">
                 <div className="content-container reverse">
-                    <div className={`photo-wrapper rotate-right desktop-view chained-reveal ${isVenueImageVisible ? 'is-visible' : ''}`}>
+                    <div
+                        ref={venueImageRef}
+                        className={`photo-wrapper rotate-right desktop-view chained-reveal ${isVenueImageVisible ? 'is-visible' : ''}`}
+                        style={{ transitionDelay: '0.4s' }} // Image appears 400ms after text
+                    >
                         <PhotoScatter
                             images={venueImages}
                             altText="Rånas Exterior"
@@ -124,7 +92,11 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
                         />
                     </div>
 
-                    <div className={`text-content chained-reveal ${isVenueTextVisible ? 'is-visible' : ''}`}>
+                    <div
+                        ref={venueTextRef}
+                        className={`text-content chained-reveal ${isVenueTextVisible ? 'is-visible' : ''}`}
+                        style={{ transitionDelay: '0s' }} // Text appears first
+                    >
                         <h2 className="text-navy">The Venue</h2>
                         <p className="subtitle text-gold">Rånäs Slott, Uppland</p>
                         <p>
@@ -135,11 +107,22 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
                 </div>
             </div>
 
-            {/* Interior Section */}
+
+            {/* Path connecting Venue to Reception - Absolute overlay */}
+            <div style={{ position: 'relative', height: '0px', width: '100%' }}>
+                <div style={{ position: 'absolute', top: '-300px', left: 0, width: '100%', height: '600px' }}>
+                    <FootstepPath scrollContainerRef={scrollContainerRef} />
+                </div>
+            </div>
+
             {/* Interior Section */}
             <div className="content-section">
                 <div className="content-container">
-                    <div className="photo-wrapper rotate-left desktop-view">
+                    <div
+                        ref={receptionImageRef}
+                        className={`photo-wrapper rotate-left desktop-view chained-reveal ${isReceptionImageVisible ? 'is-visible' : ''}`}
+                        style={{ transitionDelay: '0.4s' }} // Image appears 400ms after text
+                    >
                         <PhotoScatter
                             images={receptionImages}
                             altText="Rånas Interior"
@@ -153,7 +136,11 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
                         />
                     </div>
 
-                    <div className="text-content">
+                    <div
+                        ref={receptionTextRef}
+                        className={`text-content chained-reveal ${isReceptionTextVisible ? 'is-visible' : ''}`}
+                        style={{ transitionDelay: '0s' }} // Text appears first
+                    >
                         <h2 className="text-navy">Reception</h2>
                         <p className="subtitle text-gold">Dining in Elegance</p>
                         <p>

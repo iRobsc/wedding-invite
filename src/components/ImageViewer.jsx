@@ -86,9 +86,14 @@ const ImageViewer = ({ images, initialIndex, onClose }) => {
         setTimeout(onClose, 300); // Wait for animation
     }, [onClose]);
 
-    // Keyboard support
+    // Keyboard support with scroll prevention
     useEffect(() => {
         const handleKeyDown = (e) => {
+            // Prevent default for keys that would scroll the page
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'PageUp', 'PageDown', 'Home', 'End'].includes(e.key)) {
+                e.preventDefault();
+            }
+
             if (e.key === 'Escape') handleClose();
             if (e.key === 'ArrowRight') handleNext();
             if (e.key === 'ArrowLeft') handlePrev();

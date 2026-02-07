@@ -163,6 +163,15 @@ button {
   display: contents;
 }
 
+/* App Container - No scroll snap on desktop */
+.app-container {
+  position: relative;
+  scroll-snap-type: none;
+  background: linear-gradient(135deg, #F9F9F5 0%, #FFF8F0 25%, #F9F9F5 50%, #FFF8F0 75%, #F9F9F5 100%);
+  background-size: 400% 400%;
+  background-attachment: local;
+}
+
 /* Content Sections */
 .content-section,
 .landing-page .hero {
@@ -171,8 +180,18 @@ button {
   align-items: center;
   justify-content: center;
   padding: var(--spacing-lg) var(--spacing-sm);
-  background-color: var(--color-cream);
-  scroll-snap-align: start;
+}
+
+/* Enable scroll snapping only on mobile */
+@media (max-width: 767px) {
+  .app-container {
+    scroll-snap-type: y mandatory;
+  }
+
+  .content-section,
+  .landing-page .hero {
+    scroll-snap-align: start;
+  }
 }
 
 .content-container {
