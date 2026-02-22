@@ -255,7 +255,7 @@ const VenueSection = ({
                     scrollContainerRef={scrollContainerRef}
                     triggerAt={0.7}
                     startX={60} endX={30}
-                    startY={-10} endY={85}
+                    startY={0} endY={85}
                     amplitude={-4} stepCount={15}
                     itemScale={0.8}
                 />

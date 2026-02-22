@@ -159,7 +159,7 @@ const ScrollArrow = ({
         requestAnimationFrame(animateScroll);
     }, [endAnchorRef, scrollContainerRef]);
 
-    // Also hide click area when animation starts via normal scroll trigger
+    // Hide arrow + click area when animation starts via normal scroll trigger
     const handleAnimationComplete = useCallback(() => {
         setHasStarted(true);
         if (onAnimationComplete) onAnimationComplete();
