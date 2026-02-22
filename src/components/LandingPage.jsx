@@ -11,6 +11,9 @@ const LandingPage = ({ isLoading, onIntroComplete, heroRef }) => {
     const [isCardOnTop, setIsCardOnTop] = React.useState(false);
 
     React.useEffect(() => {
+        // Don't start animation until loading is complete
+        if (isLoading) return;
+
         document.fonts.ready.then(() => {
             // Slide card out of envelope (delayed slightly for effect)
             setTimeout(() => setIsCardOut(true), 2000);
@@ -19,7 +22,7 @@ const LandingPage = ({ isLoading, onIntroComplete, heroRef }) => {
             // Signal animation complete
             setTimeout(() => onIntroComplete && onIntroComplete(), 2200);
         });
-    }, [onIntroComplete]);
+    }, [isLoading, onIntroComplete]);
 
     // Keyframe animation style for card emergence
     const cardEmergenceAnimation = `

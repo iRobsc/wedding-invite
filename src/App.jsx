@@ -10,23 +10,45 @@ import ResponsivePathBridge from './components/ResponsivePathBridge';
 
 // Assets to Preload
 import heroImg from './assets/wedding_hero_pastel.png';
+import heroBg from './assets/wedding_paper_2.png';
+import heroEntrance from './assets/ranasEntrance.jpeg';
 import churchImg from './assets/Fasterna_kyrka.jpg';
+import churchImg2 from './assets/Fasterna_Kyrka_2.jpg';
+import fasternaToVenue from './assets/fasterna_to_venue.png';
 import venueExt from './assets/Ranas.Slott.jpg';
 import venueInt from './assets/ranas_interior.png';
+import ranasMingle from './assets/RanasMingel.jpg';
+import ranasDinner from './assets/Ranas.middag.jpg';
+import weddingCakeImg from './assets/weddingCake.jpeg';
+import afterpartyImg from './assets/afterparty.jpg';
+import breakfastImg from './assets/RanasFrukost.jpg';
 import carSvg from './assets/wedding_car.svg';
 import flowerCeremony from './assets/flower_ceremony.svg';
 import flowerVenue from './assets/flower_venue.svg';
 import flowerReception from './assets/flower_reception.svg';
+import cornerFlower from './assets/cornerflower.png';
+import pastelFlower from './assets/pastel_flower.png';
 
 const PRELOAD_ASSETS = [
   heroImg,
+  heroBg,
+  heroEntrance,
   churchImg,
+  churchImg2,
+  fasternaToVenue,
   venueExt,
   venueInt,
+  ranasMingle,
+  ranasDinner,
+  weddingCakeImg,
+  afterpartyImg,
+  breakfastImg,
   carSvg,
   flowerCeremony,
   flowerVenue,
-  flowerReception
+  flowerReception,
+  cornerFlower,
+  pastelFlower
 ];
 
 function App() {
