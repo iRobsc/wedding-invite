@@ -9,7 +9,7 @@ const CarScrollPath = ({ scrollContainerRef, isVisible = false, onScrollStart, o
     const START_X = 60; // Aligns with Arrow End (50% + 12.5%)
     const START_Y = 0;
     const END_X = 30;
-    const END_Y = 90;
+    const END_Y = 90; // Span the full gap height
 
     // Curvature also scales with squeeze
     const curvature = 25 * squeeze;
@@ -17,7 +17,7 @@ const CarScrollPath = ({ scrollContainerRef, isVisible = false, onScrollStart, o
 
     // Threshold Function (Memoized)
     const thresholdFn = useCallback((container) => {
-        return container.scrollTop > container.clientHeight * 1.2; // Trigger even earlier
+        return container.scrollTop > container.clientHeight * 1.4; // Trigger even earlier
     }, []);
 
     return (
@@ -39,8 +39,8 @@ const CarScrollPath = ({ scrollContainerRef, isVisible = false, onScrollStart, o
                 pathD={pathD}
                 triggerThreshold={thresholdFn}
                 rotateWithTangent={false} // Locked Horizontal
-                scaleX={-0.025}           // Flipped horizontally
-                scaleY={0.025}            // Same magnitude = square icon
+                scaleX={-0.04 * squeeze}  // Scaled with squeeze (0.025 on mobile, 0.05 on desktop)
+                scaleY={0.04 * squeeze}   // Scaled with squeeze
                 initialOpacity={1}        // Reverted to 1 as requested
                 strokeDasharray="5, 5"    // Dotted
                 leadOffset={5}            // Car leads line slightly

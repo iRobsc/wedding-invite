@@ -16,6 +16,7 @@ import FootstepPath from './FootstepPath';
 import CarScrollPath from './CarScrollPath';
 import ResponsivePathBridge from './ResponsivePathBridge';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
+import { useVerticalSqueeze } from '../hooks/useVerticalSqueeze';
 
 
 // Image Constants - Single Source of Truth
@@ -96,6 +97,10 @@ const VenueSection = ({
         if (isVenueTextVisible && onVenueTextComplete) onVenueTextComplete();
     }, [isVenueTextVisible, onVenueTextComplete]);
 
+    // Responsive padding for the car bridge
+    const squeeze = useVerticalSqueeze();
+    const carPaddingTop = 100 * squeeze; // 100px on desktop, 50px on mobile
+
     return (
         <div className="venue-section">
             {/* Church Section */}
@@ -138,6 +143,7 @@ const VenueSection = ({
                 sectionAboveRef={ceremonySectionRef}
                 titleBelowRef={venueTitleRef}
                 scrollContainerRef={scrollContainerRef}
+                paddingTop={carPaddingTop}
             >
                 <CarScrollPath
                     scrollContainerRef={scrollContainerRef}
@@ -194,7 +200,7 @@ const VenueSection = ({
             >
                 <FootstepPath
                     scrollContainerRef={scrollContainerRef}
-                    triggerAt={0.8}
+                    triggerAt={0.7}
                     startX={30} endX={60}
                     startY={-15} endY={85}
                     amplitude={-4} stepCount={15}
@@ -247,7 +253,7 @@ const VenueSection = ({
             >
                 <FootstepPath
                     scrollContainerRef={scrollContainerRef}
-                    triggerAt={0.8}
+                    triggerAt={0.7}
                     startX={60} endX={30}
                     startY={-10} endY={85}
                     amplitude={-4} stepCount={15}
@@ -294,7 +300,7 @@ const VenueSection = ({
             >
                 <FootstepPath
                     scrollContainerRef={scrollContainerRef}
-                    triggerAt={0.8}
+                    triggerAt={0.6}
                     startX={30} endX={58}
                     startY={-10} endY={85}
                     amplitude={8} stepCount={15}
@@ -349,7 +355,7 @@ const VenueSection = ({
             >
                 <FootstepPath
                     scrollContainerRef={scrollContainerRef}
-                    triggerAt={0.8}
+                    triggerAt={0.7}
                     startX={65} endX={30}
                     startY={-10} endY={85}
                     amplitude={5} stepCount={12}

@@ -53,13 +53,13 @@ export const translations = {
         sv: "Efter vigseln är det en kort bilresa till Rånäs Slott, där firandet kommer att äga rum. Vi hjälper gäster utan bil med transport från kyrkan till slottet."
     },
     "At the castle you will first check in and get your included accommodation. Then at": {
-        sv: "Vid slottet checkar ni först in och får ert inkluderade boende. Sedan klockan"
+        sv: "Vid slottet checkar ni först in och får ert inkluderade boende. Klockan"
     },
     "16:45": {
         sv: "16:45"
     },
     "there will be a mingle and our arrival from the church.": {
-        sv: "blir det mingel och vår ankomst från kyrkan."
+        sv: "är det mingel och vi ankommer från kyrkan."
     },
     "Rånäs Castle Parking": {
         sv: "Rånäs Slott Parkering"
@@ -73,13 +73,13 @@ export const translations = {
         sv: "Galleriet 18:00"
     },
     "The dinner will start after the mingle at": {
-        sv: "Middagen börjar efter minglet klockan"
+        sv: "Klockan"
     },
     "18:00": {
         sv: "18:00"
     },
     "where a three course meal will be served. You will be able to indicate any dietary preferences or allergies in the RSVP form included with this invitation.": {
-        sv: "där en trerättersmiddag serveras. Ni kan ange eventuella matpreferenser eller allergier i OSA-formuläret som finns med i inbjudan."
+        sv: "serveras en trerättersmiddag. Ni kan ange eventuella matpreferenser eller allergier i OSA-formuläret som finns med i inbjudan."
     },
     "During dinner, there will be toasts and entertainment led by our toastmaster and toastmadame. If you would like to give a toast, you can find the contact information further down.": {
         sv: "Under middagen kommer det att vara tal och underhållning ledda av vår toastmaster och toastmadame. Om du vill hålla ett tal kan du hitta kontaktuppgifterna längre ner."
@@ -107,7 +107,7 @@ export const translations = {
         sv: "Fest"
     },
     "The celebration continues after the fika with drinks, music, and dancing.": {
-        sv: "Efter fikat börjar festen med drinkar, musik och dans."
+        sv: "Sedan börjar festen med drinkar, musik och dans."
     },
     "Around": {
         sv: "Runt"
@@ -246,6 +246,6 @@ export const translations = {
         sv: "Kostym"
     },
     "We will add more things to the list.": {
-        sv: "Listan kommer uppdateras med tiden."
+        sv: "Vi uppdaterar listan vid behov."
     },
 };

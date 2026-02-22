@@ -51,6 +51,8 @@ const InfoCard = styled.div`
   border: 1px solid rgba(212, 175, 55, 0.4); // Gold border
   box-shadow: 0 20px 50px rgba(0,0,0,0.15); // Slightly lighter shadow since bg is light
   padding: 3rem;
+  padding-bottom: 4rem;
+  margin-bottom: 2rem;
   max-width: 900px;
   width: 90%;
   position: relative;
