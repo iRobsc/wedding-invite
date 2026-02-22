@@ -256,6 +256,12 @@ button {
   color: var(--color-navy);
 }
 
+/* Venue section headers use Dancing Script (similar to Alex Brush, better F) */
+.venue-section .text-content h2 {
+  font-family: 'Dancing Script', cursive;
+  font-weight: 400;
+}
+
 .text-content .subtitle {
   color: var(--color-gold);
   font-family: var(--font-heading);
