@@ -5,15 +5,9 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
  * 
  * Dynamically sizes a path overlay container to span the exact gap between
  * the bottom of one section and the top of the next section's title (h2).
- * Uses ResizeObserver + window resize to stay perfectly positioned.
  * 
- * Props:
- *   sectionAboveRef  - ref to the DOM element of the section above (measures bottom edge)
- *   titleBelowRef    - ref to the h2 title element in the section below (measures top edge)
- *   scrollContainerRef - ref to the scroll container for offset calculations
- *   paddingTop       - extra px padding above the start (default 0)
- *   paddingBottom    - extra px padding below the end (default 0)
- *   children         - FootstepPath or similar path component
+ * Handles first-load layout shifts caused by images loading progressively
+ * by watching for image load events and polling for position changes.
  */
 const ResponsivePathBridge = ({
     sectionAboveRef,
@@ -24,6 +18,7 @@ const ResponsivePathBridge = ({
     children
 }) => {
     const [bridgeStyle, setBridgeStyle] = useState(null);
+    const lastValuesRef = useRef({ top: -1, height: -1 });
 
     const measure = useCallback(() => {
         const above = sectionAboveRef?.current;
@@ -32,32 +27,31 @@ const ResponsivePathBridge = ({
 
         if (!above || !titleBelow || !scrollContainer) return;
 
-        // Get positions relative to the scroll container
         const containerRect = scrollContainer.getBoundingClientRect();
         const aboveRect = above.getBoundingClientRect();
         const titleRect = titleBelow.getBoundingClientRect();
-
-        // Calculate absolute positions within the scroll container
         const scrollTop = scrollContainer.scrollTop;
 
-        // Bottom of the section above (relative to scroll container's content)
         const aboveBottom = aboveRect.bottom - containerRect.top + scrollTop - paddingTop;
-
-        // Top of the title below (relative to scroll container's content)
         const titleTop = titleRect.top - containerRect.top + scrollTop + paddingBottom;
-
-        // Height is the gap between them
         const height = Math.max(titleTop - aboveBottom, 0);
 
-        setBridgeStyle({
-            position: 'absolute',
-            top: `${aboveBottom}px`,
-            left: 0,
-            width: '100%',
-            height: `${height}px`,
-            pointerEvents: 'none',
-            zIndex: 5
-        });
+        // Only update state if values actually changed (avoids unnecessary re-renders)
+        const roundedTop = Math.round(aboveBottom);
+        const roundedHeight = Math.round(height);
+
+        if (roundedTop !== lastValuesRef.current.top || roundedHeight !== lastValuesRef.current.height) {
+            lastValuesRef.current = { top: roundedTop, height: roundedHeight };
+            setBridgeStyle({
+                position: 'absolute',
+                top: `${aboveBottom}px`,
+                left: 0,
+                width: '100%',
+                height: `${height}px`,
+                pointerEvents: 'none',
+                zIndex: 5
+            });
+        }
     }, [sectionAboveRef, titleBelowRef, scrollContainerRef, paddingTop, paddingBottom]);
 
     useEffect(() => {
@@ -66,45 +60,74 @@ const ResponsivePathBridge = ({
         const scrollContainer = scrollContainerRef?.current;
         if (!above || !titleBelow) return;
 
-        // Initial measurement (with a small delay for layout to settle)
-        const initialTimeout = setTimeout(measure, 100);
+        const cleanupFns = [];
 
-        // Secondary measurement to catch late-loading images on first visit
-        const secondaryTimeout = setTimeout(measure, 500);
-
-        // ResizeObserver for both elements AND the scroll container
-        // Observing the scroll container catches any layout shift caused by
-        // images loading anywhere in the page (which changes total scroll height)
-        const observer = new ResizeObserver(() => {
-            measure();
-        });
+        // --- 1. ResizeObserver on sections + scroll container ---
+        const observer = new ResizeObserver(() => measure());
         observer.observe(above);
         observer.observe(titleBelow);
-        if (scrollContainer) {
-            observer.observe(scrollContainer);
-        }
+        if (scrollContainer) observer.observe(scrollContainer);
+        cleanupFns.push(() => observer.disconnect());
 
-        // Window load event - fires when ALL resources (images, fonts, etc.) are ready
-        // This is the definitive "everything is loaded" signal on first page load
-        const handleLoad = () => {
-            // Small delay to let the browser finish painting after load
-            setTimeout(measure, 50);
+        // --- 2. Image load listeners ---
+        // When images inside sections finish loading, they change the section's height.
+        // This is the direct cause of the first-load positioning bug.
+        const handleImageLoad = () => measure();
+
+        const watchImages = (root) => {
+            const images = root.querySelectorAll('img');
+            images.forEach(img => {
+                if (!img.complete) {
+                    img.addEventListener('load', handleImageLoad);
+                    img.addEventListener('error', handleImageLoad);
+                }
+            });
         };
-        window.addEventListener('load', handleLoad);
 
-        // Window resize handler
+        // Watch all current images
+        watchImages(above);
+
+        // Watch for dynamically added images via MutationObserver
+        const mutObserver = new MutationObserver((mutations) => {
+            measure();
+            mutations.forEach(m => {
+                m.addedNodes.forEach(node => {
+                    if (node.nodeType === 1) watchImages(node);
+                });
+            });
+        });
+        mutObserver.observe(above, { childList: true, subtree: true });
+        cleanupFns.push(() => mutObserver.disconnect());
+
+        // --- 3. RAF polling with change detection for first 5 seconds ---
+        // Catches any layout shift that observers might miss.
+        // Only triggers state updates when values actually change (via lastValuesRef).
+        let pollActive = true;
+        let pollStart = performance.now();
+        const POLL_DURATION = 5000; // 5 seconds
+
+        const poll = () => {
+            if (!pollActive) return;
+            measure();
+            if (performance.now() - pollStart < POLL_DURATION) {
+                requestAnimationFrame(poll);
+            }
+        };
+        requestAnimationFrame(poll);
+        cleanupFns.push(() => { pollActive = false; });
+
+        // --- 4. Window resize + load ---
         window.addEventListener('resize', measure);
-
-        return () => {
-            clearTimeout(initialTimeout);
-            clearTimeout(secondaryTimeout);
-            observer.disconnect();
-            window.removeEventListener('load', handleLoad);
+        const handleLoad = () => setTimeout(measure, 50);
+        window.addEventListener('load', handleLoad);
+        cleanupFns.push(() => {
             window.removeEventListener('resize', measure);
-        };
+            window.removeEventListener('load', handleLoad);
+        });
+
+        return () => cleanupFns.forEach(fn => fn());
     }, [sectionAboveRef, titleBelowRef, scrollContainerRef, measure]);
 
-    // Don't render until we have measurements
     if (!bridgeStyle || bridgeStyle.height === '0px') return null;
 
     return (

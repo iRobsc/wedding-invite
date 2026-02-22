@@ -16,7 +16,7 @@ const usePreloader = (imageSources) => {
             });
 
             // Safety timeout: If images take too long, proceed anyway
-            const timeoutPromise = new Promise(resolve => setTimeout(resolve, 10000));
+            const timeoutPromise = new Promise(resolve => setTimeout(resolve, 5000));
 
             await Promise.race([Promise.all(promises), timeoutPromise]);
             setIsLoading(false);
