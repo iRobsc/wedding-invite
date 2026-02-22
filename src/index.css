@@ -371,12 +371,15 @@ button {
 /* Allow single image to be larger */
 .scatter-container.scatter-single .scatter-photo {
   max-height: 70vh;
+  padding-top: 0rem;
+  padding-bottom: 0rem;
 }
 
 /* Single image fills more space on small screens */
 @media (max-width: 600px) {
   .scatter-container {
-    padding: 0.2rem;
+    padding-left: 0.8rem;
+    padding-right: 0.2rem;
     min-height: auto;
   }
 

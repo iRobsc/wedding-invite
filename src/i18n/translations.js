@@ -30,7 +30,7 @@ export const translations = {
         sv: "Fasterna Kyrka 15:00"
     },
     "The day begins at Fasterna Church for the ceremony to take place at": {
-        sv: "Dagen börjar i Fasterna Kyrka där vigseln äger rum klockan"
+        sv: "Dagen börjar i Fasterna Kyrka där vigseln äger rum "
     },
     "15:00": {
         sv: "15:00"
@@ -53,7 +53,7 @@ export const translations = {
         sv: "Efter vigseln är det en kort bilresa till Rånäs Slott, där firandet kommer att äga rum. Vi hjälper gäster utan bil med transport från kyrkan till slottet."
     },
     "At the castle you will first check in and get your included accommodation. Then at": {
-        sv: "Vid slottet checkar ni först in och får ert inkluderade boende. Klockan"
+        sv: "Vid slottet checkar ni först in och får ert inkluderade boende. Sedan"
     },
     "16:45": {
         sv: "16:45"
@@ -73,7 +73,7 @@ export const translations = {
         sv: "Galleriet 18:00"
     },
     "The dinner will start after the mingle at": {
-        sv: "Klockan"
+        sv: "Vid"
     },
     "18:00": {
         sv: "18:00"
@@ -97,9 +97,6 @@ export const translations = {
     },
     "Fika": {
         sv: "Fika"
-    },
-    "as we call it in swedish.": {
-        sv: "som vi säger på svenska."
     },
 
     // ─── VenueSection: Party ─────────────────────────────────
@@ -136,13 +133,13 @@ export const translations = {
         sv: "Galleriet 09:00"
     },
     "A buffet style breakfast will be served from": {
-        sv: "En frukostbuffé serveras från klockan"
+        sv: "En frukostbuffé serveras från "
     },
     "09:00": {
         sv: "09:00"
     },
     "and the checkout is at": {
-        sv: "och utcheckning är klockan"
+        sv: "och utcheckning är "
     },
     "11:00": {
         sv: "11:00"
