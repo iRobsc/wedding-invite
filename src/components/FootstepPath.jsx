@@ -273,8 +273,6 @@ const PathElement = ({ step, isVisible, isLeft, isLast, type, itemScale = 1 }) =
                 position: 'absolute',
                 left: `${step.x}%`,
                 top: `${step.y}%`,
-                left: `${step.x}%`,
-                top: `${step.y}%`,
                 transform: `translate(${perpTranslateX}px, ${perpTranslateY}px) rotate(${step.rot}deg) scale(${(isAnimatedType ? scale : 1) * itemScale})`,
                 width: getWidth(),
                 height: getHeight(),

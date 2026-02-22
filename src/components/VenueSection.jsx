@@ -2,7 +2,7 @@ import _, { useRef } from 'react';
 import { rbt } from '../i18n/i18n';
 import ranasExterior from '../assets/Ranas.Slott.jpg';
 import fasternaKyrka from '../assets/Fasterna_kyrka.jpg';
-import fasternaKyrka2 from '../assets/Fasterna_kyrka_2.jpg';
+import fasternaKyrka2 from '../assets/Fasterna_Kyrka_2.jpg';
 import fasternaToVenue from '../assets/fasterna_to_venue.png';
 import ranasMingle from '../assets/RanasMingel.jpg';
 import ranasDinner from '../assets/Ranas.middag.jpg';
