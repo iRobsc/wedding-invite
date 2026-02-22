@@ -10,9 +10,8 @@ const LoadingScreen = ({ isLoading }) => {
                 left: 0,
                 width: '100vw',
                 height: '100vh',
-                // No background color - transparent overlay
+                backgroundColor: '#faf8f5',
                 display: 'flex',
-                flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
                 zIndex: 9999,
@@ -22,28 +21,39 @@ const LoadingScreen = ({ isLoading }) => {
                 pointerEvents: isLoading ? 'all' : 'none'
             }}
         >
-            <div className="loader-content" style={{ textAlign: 'center' }}>
-                <h1 className="alex-brush" style={{
-                    fontSize: '4rem',
-                    color: 'var(--color-navy)',
-                    marginBottom: '1rem'
-                }}>
-                    M & R
-                </h1>
-                <div className="spinner" style={{
-                    width: '40px',
-                    height: '40px',
-                    border: '3px solid #e2e8f0', // Slate-200
-                    borderTop: '3px solid #d4af37', // Gold
-                    borderRadius: '50%',
-                    animation: 'spin 1s linear infinite',
-                    margin: '0 auto'
-                }} />
-            </div>
+            <h1
+                className="alex-brush shimmer-text"
+                style={{
+                    fontSize: 'clamp(4rem, 12vw, 8rem)',
+                    margin: 0,
+                    userSelect: 'none',
+                }}
+            >
+                M & R
+            </h1>
             <style>{`
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
+                @keyframes shimmer {
+                    0% {
+                        background-position: -200% center;
+                    }
+                    100% {
+                        background-position: 200% center;
+                    }
+                }
+                .shimmer-text {
+                    background: linear-gradient(
+                        90deg,
+                        #c0c0c0 0%,
+                        #e8e8e8 25%,
+                        #f5f5f5 50%,
+                        #e8e8e8 75%,
+                        #c0c0c0 100%
+                    );
+                    background-size: 200% 100%;
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    animation: shimmer 2s ease-in-out infinite;
                 }
             `}</style>
         </div>

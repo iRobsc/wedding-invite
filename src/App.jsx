@@ -66,6 +66,7 @@ function App() {
 
   return (
     <LanguageProvider>
+      <LoadingScreen isLoading={isLoading} />
       <div
         ref={containerRef}
         className="app-container"
