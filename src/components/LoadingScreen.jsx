@@ -25,7 +25,7 @@ const LoadingScreen = ({ isLoading }) => {
             <div className="loader-content" style={{ textAlign: 'center' }}>
                 <h1 className="alex-brush" style={{
                     fontSize: '4rem',
-                    color: '#334155', // Slate-700
+                    color: 'var(--color-navy)',
                     marginBottom: '1rem'
                 }}>
                     M & R

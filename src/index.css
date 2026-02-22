@@ -1,9 +1,9 @@
 :root {
   /* Colors */
-  --color-gold: #D4AF37;
+  --color-gold: #1179119f;
   --color-gold-light: #F4E5B0;
   --color-cream: #F9F9F5;
-  --color-navy: #0F172A;
+  --color-navy: #2c3e50;
   --color-text-main: #334155;
   --color-text-light: #64748B;
   --color-white: #FFFFFF;
@@ -172,6 +172,11 @@ button {
   background-attachment: local;
 }
 
+.venue-section .content-section {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
 /* Content Sections */
 .content-section,
 .landing-page .hero {
@@ -182,65 +187,48 @@ button {
   padding: var(--spacing-lg) var(--spacing-sm);
 }
 
-/* Enable scroll snapping only on mobile */
-@media (max-width: 767px) {
-  .app-container {
-    scroll-snap-type: y mandatory;
-  }
 
-  .content-section,
-  .landing-page .hero {
-    scroll-snap-align: start;
-  }
-}
-
+/* Content Container - Fluid Layout */
+/* Content Container - Fluid Layout */
 .content-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  /* Force horizontal layout always */
   align-items: center;
-  gap: var(--spacing-lg);
+  justify-content: center;
+  gap: clamp(0.5rem, 5vw, var(--spacing-xl));
   max-width: 1200px;
   width: 100%;
 }
 
-@media (min-width: 768px) {
-  .content-container {
-    flex-direction: row;
-    justify-content: space-between;
-    gap: var(--spacing-xl);
-  }
-
-  .content-container.reverse {
-    flex-direction: row-reverse;
-  }
+.content-container.reverse {
+  flex-direction: row-reverse;
+  /* flex-wrap: nowrap; (Inherited/Default) */
 }
 
 /* Text Content */
+/* Text Content */
 .text-content {
-  /* Flatten for mobile ordering */
-  display: contents;
+  flex: 1;
+  min-width: 0;
+  /* Allow shrinking to fit side-by-side */
+  max-width: 500px;
+  /* Optional: keep max width for readability */
+  text-align: left;
 }
 
 .text-content>* {
-  text-align: center;
-  /* Center text on mobile */
+  text-align: inherit;
 }
 
-@media (min-width: 768px) {
-  .text-content {
-    display: block;
-    flex: 1;
-    max-width: 500px;
-    text-align: left;
-  }
-
-  .text-content>* {
-    text-align: inherit;
-  }
-
-  .content-container.reverse .text-content {
-    text-align: right;
-  }
+/* Ensure consistent text alignment when wrapped? 
+   Actually, let's keep it left/right aligned for "desktop feel" even on small screens if possible, 
+   but centering usually looks better when stacked. 
+   Let's leave alignment as is for now (inherited) and let flex positioning handle it.
+*/
+.content-container.reverse .text-content {
+  text-align: right;
 }
 
 .text-content h2 {
@@ -248,9 +236,6 @@ button {
   font-size: 4rem;
   margin-bottom: 0.5rem;
   color: var(--color-navy);
-
-  /* Mobile: Title First */
-  order: -2;
 }
 
 .text-content .subtitle {
@@ -258,33 +243,27 @@ button {
   font-family: var(--font-heading);
   font-style: italic;
   font-size: 1.5rem;
-
-  /* Mobile: Subtitle Second */
-  order: -1;
   margin-bottom: 1rem;
 }
 
 .text-content p {
   color: var(--color-text-main);
   font-size: 1.15rem;
-
-  /* Mobile: Description Last */
-  order: 1;
-  padding: 0 0.5rem;
 }
 
-
+/* Photo Frames */
 /* Photo Frames */
 .photo-wrapper {
   flex: 1;
   display: flex;
   justify-content: center;
+  min-width: 0;
+  /* Allow shrinking to fit side-by-side */
 }
 
 .photo-frame {
   max-width: 100%;
   width: 450px;
-  /* Fixed width for consistency */
   height: auto;
   border: 15px solid white;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -292,164 +271,11 @@ button {
 }
 
 .rotate-left .photo-frame {
-  transform: rotate(-3deg);
+  transform: rotate(3deg);
 }
 
 .rotate-right .photo-frame {
   transform: rotate(2deg);
-}
-
-@media (max-width: 767px) {
-
-  /* Zero Horizontal Padding for Edge-to-Edge Image */
-  .content-section,
-  .landing-page .hero {
-    padding: var(--spacing-sm) 0;
-  }
-
-  /* Compact gap */
-  .content-container {
-    gap: 0.5rem;
-  }
-
-  /* Maximize image wrapper width */
-  .photo-wrapper {
-    width: 100%;
-    margin: 0.5rem 0;
-  }
-
-  /* Maximize image - Instagram Style */
-  .photo-frame {
-    width: 100%;
-    max-height: 45vh;
-    /* Keep it shorter to fit text */
-    object-fit: cover;
-    display: block;
-    /* Remove inline-block spacing */
-
-    /* Remove "frame" look */
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
-
-    margin: 0;
-  }
-
-  /* Reset Rotation */
-  .rotate-left .photo-frame,
-  .rotate-right .photo-frame {
-    transform: none;
-  }
-
-  /* Compact typography with padding since container has none */
-  .text-content h2 {
-    font-size: 2.2rem;
-    margin-bottom: 0.2rem;
-    padding: 0 var(--spacing-sm);
-  }
-
-  .text-content .subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    padding: 0 var(--spacing-sm);
-  }
-
-  .text-content p {
-    font-size: 0.95rem;
-    line-height: 1.35;
-    padding: 0 var(--spacing-sm);
-  }
-}
-
-
-
-/* Image Carousel Styles */
-.carousel-container {
-  position: relative;
-  width: 100%;
-  margin: 0.5rem 0;
-}
-
-.carousel-scroller {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  /* Firefox */
-  -ms-overflow-style: none;
-  /* IE/Edge */
-}
-
-.carousel-scroller::-webkit-scrollbar {
-  display: none;
-  /* Chrome/Safari */
-}
-
-.carousel-image {
-  flex-shrink: 0;
-  width: 100%;
-  height: 45vh;
-  object-fit: cover;
-  scroll-snap-align: center;
-  scroll-snap-stop: always;
-  /* Force stop at each image (TikTok feel) */
-}
-
-/* 1/x Badge */
-.carousel-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: rgba(30, 30, 30, 0.7);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  pointer-events: none;
-}
-
-/* Pagination Dots Container (Anchor) */
-.carousel-dots-container {
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  width: 0;
-  /* Acts as a centered anchor point */
-  height: 20px;
-  overflow: visible;
-  /* Allow dots to spill out left/right */
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  /* Track extends from here */
-  z-index: 10;
-}
-
-/* Sliding Track */
-.carousel-dots-track {
-  display: flex;
-  align-items: center;
-  /* Transform is handled by JS for centering */
-  will-change: transform;
-}
-
-/* Fixed Cell Wrapper */
-.carousel-dot-wrapper {
-  width: 14px;
-  /* Matches JS CELL_WIDTH */
-  height: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-/* Inner Dot (Visual) */
-.carousel-dot-inner {
-  border-radius: 50%;
-  /* Size and Color managed by JS */
-  will-change: width, height, background-color, opacity;
 }
 
 /* Scatter Photo Layout */
@@ -459,27 +285,25 @@ button {
   justify-content: center;
   align-content: center;
   width: 100%;
-  width: 100%;
-  max-width: 900px;
-  /* Increased from 600px for wider spread */
-  /* Constrain width to force wrapping */
   height: auto;
   min-height: 50vh;
   position: relative;
   padding: 2rem;
   gap: 20px;
-  /* Use gap for spacing instead of margins */
 }
 
 .scatter-item-wrapper {
   position: relative;
-  /* Width is controlled by specific classes below */
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), z-index 0s 0.5s;
+  /* Center content for when images are narrower than the slot (portraits) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Dynamic Sizes based on count */
+/* Dynamic Sizes based on count - Fluid Percentages */
 
-/* 1 Image: Huge */
+/* 1 Image */
 .scatter-container.scatter-single .scatter-item-wrapper {
   width: 95%;
   max-width: 600px;
@@ -490,48 +314,63 @@ button {
   transform: rotate(-2deg);
 }
 
-/* 2-3 Images: Large, 2 per row */
+/* 2-3 Images */
 .scatter-container.scatter-few .scatter-item-wrapper {
-  width: 48%;
-  margin: 0;
+  width: 45%;
+  /* Slightly less than 50% to ensure fit with gap */
+  min-width: 140px;
+  /* Allow 2 columns on small screens (~300px+) */
+  flex-grow: 1;
 }
 
-/* 4-8 Images: Medium, 3 per row */
+/* 4-8 Images */
 .scatter-container.scatter-medium .scatter-item-wrapper {
   width: 30%;
-  margin: 0;
+  min-width: 110px;
+  flex-grow: 1;
 }
 
-/* 9+ Images: Small, 4 per row */
+/* 9+ Images */
 .scatter-container.scatter-many .scatter-item-wrapper {
   width: 22%;
-  margin: 0;
+  min-width: 90px;
+  flex-grow: 1;
 }
 
 .scatter-photo {
-  width: 100%;
-  height: auto;
+  /* Balance Area: Constrain height so portraits don't dominate */
+  width: auto;
+  max-width: 100%;
+  max-height: 350px;
+  /* fluid limit for multi-images */
+
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   border: 8px solid white;
-  /* Thinner border for small scattered photos */
   transition: box-shadow 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   will-change: box-shadow;
 }
 
+/* Allow single image to be larger */
+.scatter-container.scatter-single .scatter-photo {
+  max-height: 70vh;
+}
+
 .scatter-item-wrapper:hover .scatter-photo {
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.22);
-  /* Deep lift shadow */
 }
 
 /* Pseudo-random rotations for "pile" effect */
 .scatter-item-wrapper:nth-child(odd) {
   transform: rotate(-4deg) translateY(5px);
   z-index: 1;
+  margin: 5px;
+  /* Add some margin for the pile effect to breathe */
 }
 
 .scatter-item-wrapper:nth-child(even) {
   transform: rotate(3deg) translateY(-5px);
   z-index: 2;
+  margin: 5px;
 }
 
 .scatter-item-wrapper:nth-child(3n) {
@@ -552,38 +391,10 @@ button {
 /* Hover Interaction: Bring to front */
 .scatter-item-wrapper:hover {
   z-index: 100;
-  /* Pop to top */
   transform: scale(1.05) rotate(0deg);
-  /* Straighten and zoom */
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), z-index 0s;
 }
 
-
-/* Responsive Toggling */
-.mobile-view {
-  display: none;
-}
-
-.desktop-view {
-  display: block;
-}
-
-@media (max-width: 767px) {
-  .mobile-view {
-    display: block;
-    width: 100%;
-  }
-
-  .desktop-view {
-    display: none;
-  }
-
-  /* Carousel container needs to assume the space of the photo-wrapper */
-  .photo-wrapper {
-    display: none;
-    /* Hide old wrapper on mobile */
-  }
-}
 
 /* -------------------------------------------------------------------------- */
 /*                               Image Viewer                                 */
@@ -824,4 +635,9 @@ button {
   transform: scaleX(-1) translateY(0);
   transition-delay: 0.5s;
   /* Wait for text to appear */
+}
+
+/* Force left alignment for venue text content */
+.text-content {
+  text-align: left !important;
 }

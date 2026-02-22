@@ -1,15 +1,17 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { LanguageProvider } from './i18n/i18n';
 import LandingPage from './components/LandingPage';
 import VenueSection from './components/VenueSection';
 import ScrollArrow from './components/ScrollArrow';
 import CarScrollPath from './components/CarScrollPath';
 import LoadingScreen from './components/LoadingScreen';
 import usePreloader from './hooks/usePreloader';
+import InfoPage from './components/InfoPage';
 
 // Assets to Preload
 import heroImg from './assets/wedding_hero_pastel.png';
-import churchImg from './assets/fasterna_kyrka.png';
-import venueExt from './assets/ranas_exterior.png';
+import churchImg from './assets/Fasterna_kyrka.jpg';
+import venueExt from './assets/Ranas.Slott.jpg';
 import venueInt from './assets/ranas_interior.png';
 import carSvg from './assets/wedding_car.svg';
 import flowerCeremony from './assets/flower_ceremony.svg';
@@ -29,6 +31,8 @@ const PRELOAD_ASSETS = [
 
 function App() {
   const containerRef = useRef(null);
+  const heroRef = useRef(null);
+  const ceremonySectionRef = useRef(null);
   const [animationStep, setAnimationStep] = useState(0);
   const [introFinished, setIntroFinished] = useState(false);
 
@@ -61,7 +65,7 @@ function App() {
   }, [introFinished]);
 
   return (
-    <>
+    <LanguageProvider>
       <div
         ref={containerRef}
         className="app-container"
@@ -76,6 +80,7 @@ function App() {
           <LandingPage
             isLoading={isLoading}
             onIntroComplete={handleIntroComplete}
+            heroRef={heroRef}
           />
           <div
             className="desktop-view"
@@ -93,6 +98,8 @@ function App() {
             <ScrollArrow
               scrollContainerRef={containerRef}
               onAnimationComplete={handleArrowComplete}
+              anchorRef={heroRef}
+              endAnchorRef={ceremonySectionRef}
             />
             <CarScrollPath
               scrollContainerRef={containerRef}
@@ -106,10 +113,13 @@ function App() {
             onTextComplete={handleTextComplete}
             onImagesComplete={handleImagesComplete}
             scrollContainerRef={containerRef}
+            onVenueTextComplete={handleVenueTextComplete}
+            firstSectionRef={ceremonySectionRef}
           />
+          <InfoPage />
         </div>
       </div>
-    </>
+    </LanguageProvider>
   )
 }
 

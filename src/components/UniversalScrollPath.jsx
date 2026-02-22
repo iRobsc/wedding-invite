@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useRef, useCallback, useEffect, useLayoutEffect, useState, useMemo } from 'react';
 import { usePathAnimation } from '../hooks/usePathAnimation';
 
 const UniversalScrollPath = ({
@@ -27,11 +27,68 @@ const UniversalScrollPath = ({
     // Icon Content (Children)
     children
 }) => {
+    const svgRef = useRef(null);
     const maskPathRef = useRef(null);
     const pathRef = useRef(null);
     const iconRef = useRef(null);
     const stopTransparentRef = useRef(null);
     const stopOpaqueRef = useRef(null);
+
+    // Track SVG element dimensions to compute aspect-ratio compensation
+    const [svgDims, setSvgDims] = useState(null);
+
+    // Parse viewBox to get coordinate space dimensions
+    const viewBoxDims = useMemo(() => {
+        if (!viewBox) return { width: 100, height: 400 };
+        const parts = viewBox.split(/\s+/).map(Number);
+        return { width: parts[2] || 100, height: parts[3] || 400 };
+    }, [viewBox]);
+
+    // Get initial measurement before first paint
+    useLayoutEffect(() => {
+        const svg = svgRef.current;
+        if (!svg) return;
+        const rect = svg.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+            setSvgDims({ width: rect.width, height: rect.height });
+        }
+    }, []);
+
+    // Observe SVG element size changes for ongoing aspect-ratio compensation
+    useEffect(() => {
+        const svg = svgRef.current;
+        if (!svg) return;
+
+        const observer = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                const { width, height } = entry.contentRect;
+                if (width > 0 && height > 0) {
+                    setSvgDims({ width, height });
+                }
+            }
+        });
+
+        observer.observe(svg);
+        return () => observer.disconnect();
+    }, []);
+
+    // Compute compensated scales so icon stays square regardless of SVG stretching
+    // When preserveAspectRatio="none", 1 viewBox unit maps to different pixel sizes on X vs Y
+    // We correct for this distortion while preserving the original scaleX/scaleY magnitudes
+    const compensatedScale = useMemo(() => {
+        // Before measurement, use raw scales (no compensation)
+        if (!svgDims) return { x: scaleX, y: scaleY };
+
+        const pxPerUnitX = svgDims.width / viewBoxDims.width;
+        const pxPerUnitY = svgDims.height / viewBoxDims.height;
+        // Correction factor: how much wider X is stretched compared to Y
+        // We normalize against pxPerUnitY (vertical is more stable)
+        const aspectCorrection = pxPerUnitY / pxPerUnitX;
+        return {
+            x: scaleX * aspectCorrection,
+            y: scaleY
+        };
+    }, [svgDims, viewBoxDims, scaleX, scaleY]);
 
     // Hook
     const { setRenderCallback } = usePathAnimation({
@@ -43,8 +100,15 @@ const UniversalScrollPath = ({
     });
 
     // Render Logic
+    const lastProgressRef = useRef(0);
+    const lastLenRef = useRef(0);
+
     const updateDOM = useCallback((progress, len) => {
         if (!pathRef.current || !iconRef.current || !maskPathRef.current) return;
+
+        // Track latest progress for resize re-application
+        lastProgressRef.current = progress;
+        lastLenRef.current = len;
 
         // 2. POSITION LOGIC
         const currentPos = progress * len;
@@ -59,24 +123,16 @@ const UniversalScrollPath = ({
             const point = pathRef.current.getPointAtLength(headPos);
 
             // DYNAMIC GRADIENT (Delayed Fade)
-            // Progress < 0.5: Line is fully opaque.
-            // Progress > 0.5: Gradient stops move down, fading the tail.
             if (stopTransparentRef.current && stopOpaqueRef.current) {
-                // Start fading out the top
-                // Map progress 0.5 -> 1.0 to 0% -> 50% fade offset (e.g.)
-                const fadeProgress = (progress); // 0 to 1
-
-                // The "transparent" part expands from 0% down to say 60%
+                const fadeProgress = (progress);
                 const fadeEndPct = fadeProgress;
 
                 stopTransparentRef.current.setAttribute('offset', `${fadeEndPct}%`);
-                // The opaque part starts LATER and softer (+40% instead of +15%)
                 stopOpaqueRef.current.setAttribute('offset', `${fadeEndPct + 90}%`);
-
             }
 
-            // 3. ROTATION
-            let angle = 0;
+            // 3. COMPUTE VISUAL ANGLE
+            let visualAngle = 0;
             if (rotateWithTangent && headPos >= 0 && headPos <= len) {
                 const pLookAt = headPos === 0
                     ? pathRef.current.getPointAtLength(Math.min(1, len))
@@ -85,18 +141,30 @@ const UniversalScrollPath = ({
                     ? point
                     : pathRef.current.getPointAtLength(Math.max(0, headPos - 1));
 
-                angle = Math.atan2(pLookAt.y - pCompare.y, pLookAt.x - pCompare.x) * (180 / Math.PI);
+                const rawDx = pLookAt.x - pCompare.x;
+                const rawDy = pLookAt.y - pCompare.y;
+                const pxX = svgDims ? svgDims.width / viewBoxDims.width : 1;
+                const pxY = svgDims ? svgDims.height / viewBoxDims.height : 1;
+                visualAngle = Math.atan2(rawDy * pxY, rawDx * pxX);
             }
 
             // 4. APPLY TRANSFORM
-            if (useLegacyStyle) {
-                const transformStr = `translate(${point.x}px, ${point.y}px) rotate(${angle}deg) scale(${scaleX}, ${scaleY})`;
-                iconRef.current.style.transform = transformStr;
-                if (iconRef.current.hasAttribute('transform')) iconRef.current.removeAttribute('transform');
-            } else {
-                const transformStr = `translate(${point.x}, ${point.y}) rotate(${angle}) scale(${scaleX}, ${scaleY})`;
-                iconRef.current.setAttribute('transform', transformStr);
-            }
+            const pxPerUnitX = svgDims ? svgDims.width / viewBoxDims.width : 1;
+            const pxPerUnitY = svgDims ? svgDims.height / viewBoxDims.height : 1;
+            const s = Math.abs(scaleY);
+            const flipX = Math.sign(scaleX) || 1;
+            const flipY = Math.sign(scaleY) || 1;
+            const cosA = Math.cos(visualAngle);
+            const sinA = Math.sin(visualAngle);
+
+            const ma = s * pxPerUnitY * flipX * cosA / pxPerUnitX;
+            const mb = s * flipX * sinA;
+            const mc = -s * pxPerUnitY * flipY * sinA / pxPerUnitX;
+            const md = s * flipY * cosA;
+
+            iconRef.current.setAttribute('transform',
+                `matrix(${ma}, ${mb}, ${mc}, ${md}, ${point.x}, ${point.y})`
+            );
 
             // 5. OPACITY & EVENT TRIGGERS
             if (progress > 0 && onScrollStart && !iconRef.current.hasStarted) {
@@ -108,16 +176,27 @@ const UniversalScrollPath = ({
                 if (iconRef.current.style.opacity !== '1') iconRef.current.style.opacity = '1';
             }
         }
-    }, [rotateWithTangent, scaleX, scaleY, initialOpacity, onScrollStart, leadOffset, useLegacyStyle]);
+    }, [rotateWithTangent, initialOpacity, onScrollStart, leadOffset, scaleX, scaleY, svgDims, viewBoxDims]);
 
-    // Initial State
+    // Keep a ref to the latest updateDOM so it can be called without re-triggering effects
+    const updateDOMRef = useRef(updateDOM);
+    updateDOMRef.current = updateDOM;
+
+    // Initial State - only run once on mount
     useLayoutEffect(() => {
         if (pathRef.current && iconRef.current) {
             const len = pathRef.current.getTotalLength();
-            updateDOM(0, len);
+            updateDOMRef.current(0, len);
             if (initialOpacity === 1) iconRef.current.style.opacity = '1';
         }
-    }, [updateDOM, initialOpacity]);
+    }, [initialOpacity]);
+
+    // Re-apply transform when svgDims changes (window resize) without resetting progress
+    useEffect(() => {
+        if (svgDims && lastLenRef.current > 0) {
+            updateDOMRef.current(lastProgressRef.current, lastLenRef.current);
+        }
+    }, [svgDims]);
 
     useEffect(() => {
         setRenderCallback(({ easedProgress, pathLength }) => {
@@ -129,7 +208,7 @@ const UniversalScrollPath = ({
     const [maskId] = useState(() => `mask-${Math.random().toString(36).substr(2, 9)}`);
     const [gradientId] = useState(() => `grad-${Math.random().toString(36).substr(2, 9)}`);
 
-    const strokeColor = strokeDasharray ? "black" : "#334155";
+    const strokeColor = "#2c3e50";
 
     return (
         <div style={{
@@ -143,6 +222,7 @@ const UniversalScrollPath = ({
             overflow: 'visible'
         }}>
             <svg
+                ref={svgRef}
                 width="100%"
                 height="100%"
                 viewBox={viewBox}
