@@ -63,27 +63,46 @@ const ResponsivePathBridge = ({
     useEffect(() => {
         const above = sectionAboveRef?.current;
         const titleBelow = titleBelowRef?.current;
+        const scrollContainer = scrollContainerRef?.current;
         if (!above || !titleBelow) return;
 
         // Initial measurement (with a small delay for layout to settle)
         const initialTimeout = setTimeout(measure, 100);
 
-        // ResizeObserver for both elements
+        // Secondary measurement to catch late-loading images on first visit
+        const secondaryTimeout = setTimeout(measure, 500);
+
+        // ResizeObserver for both elements AND the scroll container
+        // Observing the scroll container catches any layout shift caused by
+        // images loading anywhere in the page (which changes total scroll height)
         const observer = new ResizeObserver(() => {
             measure();
         });
         observer.observe(above);
         observer.observe(titleBelow);
+        if (scrollContainer) {
+            observer.observe(scrollContainer);
+        }
+
+        // Window load event - fires when ALL resources (images, fonts, etc.) are ready
+        // This is the definitive "everything is loaded" signal on first page load
+        const handleLoad = () => {
+            // Small delay to let the browser finish painting after load
+            setTimeout(measure, 50);
+        };
+        window.addEventListener('load', handleLoad);
 
         // Window resize handler
         window.addEventListener('resize', measure);
 
         return () => {
             clearTimeout(initialTimeout);
+            clearTimeout(secondaryTimeout);
             observer.disconnect();
+            window.removeEventListener('load', handleLoad);
             window.removeEventListener('resize', measure);
         };
-    }, [sectionAboveRef, titleBelowRef, measure]);
+    }, [sectionAboveRef, titleBelowRef, scrollContainerRef, measure]);
 
     // Don't render until we have measurements
     if (!bridgeStyle || bridgeStyle.height === '0px') return null;
