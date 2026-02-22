@@ -159,8 +159,15 @@ export const usePathAnimation = ({
         onFrameRef.current = cb;
     }, []);
 
+    // Allow manual triggering (e.g., on click)
+    const triggerManually = useCallback(() => {
+        if (!hasTriggered) {
+            setHasTriggered(true);
+        }
+    }, [hasTriggered]);
+
     // We expose cubicBezier in case consumer wants it
-    return { hasTriggered, setRenderCallback, currentProgressRef };
+    return { hasTriggered, setRenderCallback, currentProgressRef, triggerManually };
 };
 
 const cubizBezierHelper = (t, [p1x, p1y, p2x, p2y]) => {

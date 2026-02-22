@@ -6,6 +6,7 @@ const UniversalScrollPath = ({
     scrollContainerRef,
     onComplete,
     onScrollStart,
+    triggerRef, // Optional ref that will be assigned the triggerManually function
 
     // SVG Config
     viewBox,
@@ -36,6 +37,7 @@ const UniversalScrollPath = ({
 
     // Track SVG element dimensions to compute aspect-ratio compensation
     const [svgDims, setSvgDims] = useState(null);
+    const lastSvgDimsRef = useRef({ width: 0, height: 0 });
 
     // Parse viewBox to get coordinate space dimensions
     const viewBoxDims = useMemo(() => {
@@ -50,11 +52,13 @@ const UniversalScrollPath = ({
         if (!svg) return;
         const rect = svg.getBoundingClientRect();
         if (rect.width > 0 && rect.height > 0) {
+            lastSvgDimsRef.current = { width: rect.width, height: rect.height };
             setSvgDims({ width: rect.width, height: rect.height });
         }
     }, []);
 
     // Observe SVG element size changes for ongoing aspect-ratio compensation
+    // Only update state when dimensions actually change to prevent flicker
     useEffect(() => {
         const svg = svgRef.current;
         if (!svg) return;
@@ -63,7 +67,12 @@ const UniversalScrollPath = ({
             for (const entry of entries) {
                 const { width, height } = entry.contentRect;
                 if (width > 0 && height > 0) {
-                    setSvgDims({ width, height });
+                    const last = lastSvgDimsRef.current;
+                    // Only update if dimensions changed by more than 1px (avoid sub-pixel noise)
+                    if (Math.abs(width - last.width) > 1 || Math.abs(height - last.height) > 1) {
+                        lastSvgDimsRef.current = { width, height };
+                        setSvgDims({ width, height });
+                    }
                 }
             }
         });
@@ -91,13 +100,20 @@ const UniversalScrollPath = ({
     }, [svgDims, viewBoxDims, scaleX, scaleY]);
 
     // Hook
-    const { setRenderCallback } = usePathAnimation({
+    const { setRenderCallback, triggerManually } = usePathAnimation({
         scrollContainerRef,
         pathRef,
         triggerThresholdFn: triggerThreshold,
         duration,
         onComplete
     });
+
+    // Expose manual trigger function to parent via ref
+    useEffect(() => {
+        if (triggerRef) {
+            triggerRef.current = triggerManually;
+        }
+    }, [triggerRef, triggerManually]);
 
     // Render Logic
     const lastProgressRef = useRef(0);
