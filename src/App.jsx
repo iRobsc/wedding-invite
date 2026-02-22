@@ -3,10 +3,10 @@ import { LanguageProvider } from './i18n/i18n';
 import LandingPage from './components/LandingPage';
 import VenueSection from './components/VenueSection';
 import ScrollArrow from './components/ScrollArrow';
-import CarScrollPath from './components/CarScrollPath';
 import LoadingScreen from './components/LoadingScreen';
 import usePreloader from './hooks/usePreloader';
 import InfoPage from './components/InfoPage';
+import ResponsivePathBridge from './components/ResponsivePathBridge';
 
 // Assets to Preload
 import heroImg from './assets/wedding_hero_pastel.png';
@@ -76,7 +76,7 @@ function App() {
           position: 'relative',
         }}
       >
-        <div style={{ position: 'relative', minHeight: '100%' }}>
+        <div className="app-main-content">
           <LandingPage
             isLoading={isLoading}
             onIntroComplete={handleIntroComplete}
@@ -101,17 +101,13 @@ function App() {
               anchorRef={heroRef}
               endAnchorRef={ceremonySectionRef}
             />
-            <CarScrollPath
-              scrollContainerRef={containerRef}
-              isVisible={animationStep >= 3}
-              onScrollStart={handleCarScrollStart}
-              onComplete={handleCarComplete}
-            />
           </div>
           <VenueSection
             animationStep={animationStep}
             onTextComplete={handleTextComplete}
             onImagesComplete={handleImagesComplete}
+            onCarScrollStart={handleCarScrollStart}
+            onCarComplete={handleCarComplete}
             scrollContainerRef={containerRef}
             onVenueTextComplete={handleVenueTextComplete}
             firstSectionRef={ceremonySectionRef}

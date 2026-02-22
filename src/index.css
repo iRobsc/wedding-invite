@@ -157,10 +157,27 @@ button {
   transition-delay: 0.5s;
 }
 
+:root {
+  --section-gap: clamp(20rem, 8vh, 8rem);
+}
+
 /* Component Wrappers - Fix for Scroll Snap */
-.landing-page,
-.venue-section {
+.landing-page {
   display: contents;
+}
+
+.venue-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+.app-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  position: relative;
+  min-height: 100%;
 }
 
 /* App Container - No scroll snap on desktop */
@@ -173,6 +190,7 @@ button {
 }
 
 .venue-section .content-section {
+  min-height: auto;
   padding-left: 30px;
   padding-right: 30px;
 }
@@ -353,6 +371,23 @@ button {
 /* Allow single image to be larger */
 .scatter-container.scatter-single .scatter-photo {
   max-height: 70vh;
+}
+
+/* Single image fills more space on small screens */
+@media (max-width: 600px) {
+  .scatter-container {
+    padding: 0.2rem;
+    min-height: auto;
+  }
+
+  .scatter-container.scatter-single .scatter-item-wrapper {
+    width: 100%;
+    max-width: none;
+  }
+
+  .scatter-photo {
+    border-width: 4px;
+  }
 }
 
 .scatter-item-wrapper:hover .scatter-photo {

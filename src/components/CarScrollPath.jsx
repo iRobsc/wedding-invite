@@ -6,14 +6,10 @@ const CarScrollPath = ({ scrollContainerRef, isVisible = false, onScrollStart, o
     // --- CONFIG ---
     const squeeze = useVerticalSqueeze();
 
-    const START_X = 70; // Aligns with Arrow End (50% + 12.5%)
-    // Original Y range: 175 to 225 (Center 200, Delta 50)
-    const CENTER_Y = 200;
-    const DELTA_Y = 50 * squeeze; // Apply squeeze factor to the spread
-
-    const START_Y = CENTER_Y - (DELTA_Y / 2);
+    const START_X = 60; // Aligns with Arrow End (50% + 12.5%)
+    const START_Y = 0;
     const END_X = 30;
-    const END_Y = CENTER_Y + (DELTA_Y / 2);
+    const END_Y = 90;
 
     // Curvature also scales with squeeze
     const curvature = 25 * squeeze;
@@ -21,7 +17,7 @@ const CarScrollPath = ({ scrollContainerRef, isVisible = false, onScrollStart, o
 
     // Threshold Function (Memoized)
     const thresholdFn = useCallback((container) => {
-        return container.scrollTop > container.clientHeight * 1.1;
+        return container.scrollTop > container.clientHeight * 1.2; // Trigger even earlier
     }, []);
 
     return (
@@ -30,7 +26,7 @@ const CarScrollPath = ({ scrollContainerRef, isVisible = false, onScrollStart, o
             top: 0,
             left: 0,
             width: '100%',
-            height: '400vh',
+            height: '100%',
             opacity: isVisible ? 1 : 0,
             transition: 'opacity 1.2s ease-out', // Match CSS fade-in
             pointerEvents: 'none'
@@ -39,7 +35,7 @@ const CarScrollPath = ({ scrollContainerRef, isVisible = false, onScrollStart, o
                 scrollContainerRef={scrollContainerRef}
                 onScrollStart={onScrollStart}
                 onComplete={onComplete}
-                viewBox="0 0 100 400"
+                viewBox="0 0 100 100"
                 pathD={pathD}
                 triggerThreshold={thresholdFn}
                 rotateWithTangent={false} // Locked Horizontal

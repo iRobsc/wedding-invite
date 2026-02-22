@@ -1,4 +1,4 @@
-import _, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { rbt } from '../i18n/i18n';
 import ranasExterior from '../assets/Ranas.Slott.jpg';
 import fasternaKyrka from '../assets/Fasterna_kyrka.jpg';
@@ -13,6 +13,7 @@ import { ShowOnlyForLang } from '../i18n/i18n';
 
 import PhotoScatter from './PhotoScatter';
 import FootstepPath from './FootstepPath';
+import CarScrollPath from './CarScrollPath';
 import ResponsivePathBridge from './ResponsivePathBridge';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
 
@@ -42,7 +43,16 @@ const breakfastImages = [
     breakfast
 ];
 
-const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onVenueTextComplete, scrollContainerRef, firstSectionRef }) => {
+const VenueSection = ({
+    animationStep = 0,
+    onTextComplete,
+    onImagesComplete,
+    onCarScrollStart,
+    onCarComplete,
+    onVenueTextComplete,
+    scrollContainerRef,
+    firstSectionRef
+}) => {
 
     // Intersection Observer hooks for scroll-based visibility
     const [ceremonyTextRef, isCeremonyTextVisible] = useIntersectionObserver({ threshold: 0.3 });
@@ -72,6 +82,19 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
     const cakeTitleRef = useRef(null);
     const afterPartyTitleRef = useRef(null);
     const breakfastTitleRef = useRef(null);
+
+    // Trigger animation steps when sections become visible
+    useEffect(() => {
+        if (isCeremonyTextVisible && onTextComplete) onTextComplete();
+    }, [isCeremonyTextVisible, onTextComplete]);
+
+    useEffect(() => {
+        if (isCeremonyImageVisible && onImagesComplete) onImagesComplete();
+    }, [isCeremonyImageVisible, onImagesComplete]);
+
+    useEffect(() => {
+        if (isVenueTextVisible && onVenueTextComplete) onVenueTextComplete();
+    }, [isVenueTextVisible, onVenueTextComplete]);
 
     return (
         <div className="venue-section">
@@ -109,6 +132,20 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
                     </div>
                 </div>
             </div>
+
+            {/* Path connecting Ceremony to Venue (The Car) */}
+            <ResponsivePathBridge
+                sectionAboveRef={ceremonySectionRef}
+                titleBelowRef={venueTitleRef}
+                scrollContainerRef={scrollContainerRef}
+            >
+                <CarScrollPath
+                    scrollContainerRef={scrollContainerRef}
+                    isVisible={animationStep >= 1}
+                    onScrollStart={onCarScrollStart}
+                    onComplete={onCarComplete}
+                />
+            </ResponsivePathBridge>
 
             {/* Exterior Section */}
             <div ref={venueSectionRef} className="content-section">
@@ -159,7 +196,7 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
                     scrollContainerRef={scrollContainerRef}
                     triggerAt={0.8}
                     startX={30} endX={60}
-                    startY={-80} endY={65}
+                    startY={-15} endY={85}
                     amplitude={-4} stepCount={15}
                     itemScale={0.8}
                 />
@@ -212,7 +249,7 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
                     scrollContainerRef={scrollContainerRef}
                     triggerAt={0.8}
                     startX={60} endX={30}
-                    startY={-60} endY={75}
+                    startY={-10} endY={85}
                     amplitude={-4} stepCount={15}
                     itemScale={0.8}
                 />
@@ -259,7 +296,7 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
                     scrollContainerRef={scrollContainerRef}
                     triggerAt={0.8}
                     startX={30} endX={58}
-                    startY={-100} endY={85}
+                    startY={-10} endY={85}
                     amplitude={8} stepCount={15}
                     type="music"
                 />
@@ -314,7 +351,7 @@ const VenueSection = ({ animationStep = 0, onTextComplete, onImagesComplete, onV
                     scrollContainerRef={scrollContainerRef}
                     triggerAt={0.8}
                     startX={65} endX={30}
-                    startY={-70} endY={85}
+                    startY={-10} endY={85}
                     amplitude={5} stepCount={12}
                     type="sleep"
                 />

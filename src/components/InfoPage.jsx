@@ -11,9 +11,10 @@ const InfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem 2rem 3rem;
+  padding: 1rem 2rem 2rem;
   position: relative;
   overflow-x: hidden;
+  margin-top: -12rem; // Manually reduce the 20rem gap to something more compact
 `;
 
 const GoldenSeparator = styled.div`
@@ -22,7 +23,7 @@ const GoldenSeparator = styled.div`
   max-width: 600px;
   height: 1px;
   background-color: #D4AF37;
-  margin-bottom: 8rem;
+  margin-bottom: 3rem;
   
   &::before, &::after {
     content: '';

@@ -22,8 +22,8 @@ const ScrollArrow = ({
     endAnchorRef,
     startX = 49.5,
     endX = 65,
-    startYInset = 25,
-    endYInset = 30,
+    startYInset = 20,
+    endYInset = 0,
 }) => {
     const [wrapperStyle, setWrapperStyle] = useState(null);
 
@@ -114,7 +114,7 @@ const ScrollArrow = ({
     const localStartX = ((pxStartX - wLeft) / wWidth) * 100;
     const localEndX = ((pxEndX - wLeft) / wWidth) * 100;
 
-    const pathD = `M ${localStartX},5 C ${localStartX},35 ${localEndX},65 ${localEndX},95`;
+    const pathD = `M ${localStartX},0 C ${localStartX},30 ${localEndX},70 ${localEndX},100`;
 
     return (
         <div className="scroll-arrow-wrapper" style={wrapperStyle}>
