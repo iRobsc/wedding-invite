@@ -6,8 +6,8 @@ const FootprintIcon = ({ isLeft, opacity }) => (
         src={soleSvg}
         alt="footprint"
         style={{
-            width: '20px',
-            height: '52px',
+            width: 'clamp(14px, 2.5vw, 20px)',
+            height: 'clamp(36px, 6.5vw, 52px)',
             opacity: opacity,
             transform: `scaleX(${isLeft ? -1 : 1})`,
             pointerEvents: 'none'
@@ -20,8 +20,8 @@ const MusicNoteIcon = ({ opacity }) => (
     <svg
         viewBox="0 0 24 24"
         style={{
-            width: '24px',
-            height: '24px',
+            width: 'clamp(16px, 3vw, 24px)',
+            height: 'clamp(16px, 3vw, 24px)',
             opacity: opacity,
             filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.15))',
             pointerEvents: 'none',
@@ -37,8 +37,8 @@ const BeamNoteIcon = ({ opacity }) => (
     <svg
         viewBox="0 0 40 32"
         style={{
-            width: '32px',
-            height: '28px',
+            width: 'clamp(22px, 4vw, 32px)',
+            height: 'clamp(19px, 3.5vw, 28px)',
             opacity: opacity,
             filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.15))',
             pointerEvents: 'none',
@@ -97,8 +97,8 @@ const SunriseIcon = ({ opacity }) => (
     <svg
         viewBox="0 0 48 48"
         style={{
-            width: '40px',
-            height: '40px',
+            width: 'clamp(28px, 5vw, 40px)',
+            height: 'clamp(28px, 5vw, 40px)',
             opacity: opacity,
             pointerEvents: 'none',
             overflow: 'visible'
@@ -252,14 +252,14 @@ const PathElement = ({ step, isVisible, isLeft, isLast, type, itemScale = 1 }) =
 
     // Determine element dimensions
     const getWidth = () => {
-        if (type === 'music') return step.noteType === 'beam' ? '32px' : '24px';
-        if (type === 'sleep') return isLast ? '40px' : '24px';
-        return '20px';
+        if (type === 'music') return step.noteType === 'beam' ? 'clamp(22px, 4vw, 32px)' : 'clamp(16px, 3vw, 24px)';
+        if (type === 'sleep') return isLast ? 'clamp(28px, 5vw, 40px)' : 'clamp(16px, 3vw, 24px)';
+        return 'clamp(14px, 2.5vw, 20px)';
     };
     const getHeight = () => {
-        if (type === 'music') return step.noteType === 'beam' ? '28px' : '24px';
-        if (type === 'sleep') return isLast ? '40px' : '24px';
-        return '52px';
+        if (type === 'music') return step.noteType === 'beam' ? 'clamp(19px, 3.5vw, 28px)' : 'clamp(16px, 3vw, 24px)';
+        if (type === 'sleep') return isLast ? 'clamp(28px, 5vw, 40px)' : 'clamp(16px, 3vw, 24px)';
+        return 'clamp(36px, 6.5vw, 52px)';
     };
 
     // Fixed pixel offset for left/right footstep separation

@@ -97,7 +97,7 @@ const Section = styled.section`
 
 const Title = styled.h2`
   font-family: var(--font-script);
-  font-size: 4rem;
+  font-size: clamp(2.2rem, 5vw, 4rem);
   margin-bottom: 0.5rem;
   color: #2c3e50; // Navy to match other script headers
   font-weight: 400;
@@ -105,7 +105,7 @@ const Title = styled.h2`
 
 const SubTitle = styled.h4`
   font-family: var(--font-body);
-  font-size: 1.4rem;
+  font-size: clamp(1rem, 2vw, 1.4rem);
   line-height: 1;
   color: #2c3e50; // Navy
   margin-bottom: 0.5rem;
@@ -113,7 +113,7 @@ const SubTitle = styled.h4`
 
 const Text = styled.p`
   font-family: var(--font-body);
-  font-size: 1.25rem;
+  font-size: clamp(0.9rem, 1.5vw, 1.25rem);
   line-height: 1.8;
   color: #2c3e50; // Navy
   margin-bottom: 1rem;
@@ -204,7 +204,7 @@ const InfoPage = () => {
         </Section>
 
         <Section style={{ marginBottom: 0 }}>
-          <p style={{ fontSize: '1.5rem', fontStyle: 'italic', marginTop: '1rem', color: '#2c3e50' }}>
+          <p style={{ fontSize: 'clamp(1rem, 2vw, 1.5rem)', fontStyle: 'italic', marginTop: '1rem', color: '#2c3e50' }}>
             {rbt("We look forward to celebrating with you!")}
           </p>
         </Section>
