@@ -641,3 +641,22 @@ button {
 .text-content {
   text-align: left !important;
 }
+
+/* Smaller fonts on narrow screens (<500px) */
+@media (max-width: 500px) {
+  .text-content h2 {
+    font-size: 3rem;
+  }
+
+  .text-content .subtitle {
+    font-size: 1.2rem;
+  }
+
+  .text-content p {
+    font-size: 1rem;
+  }
+
+  body {
+    font-size: 0.95rem;
+  }
+}
