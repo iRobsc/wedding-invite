@@ -228,10 +228,10 @@ export const translations = {
         sv: "Gåvor"
     },
     "Your presence is the greatest gift of all. However, should you wish to honor us with a gift, a contribution to our honeymoon fund would be warmly appreciated.": {
-        sv: "Er närvaro är den finaste gåvan av alla, men om ni ändå önskar ge en bröllopspresent skulle ett bidrag till vår bröllopsresa vara varmt uppskattat."
+        sv: "Er närvaro är den finaste gåvan av alla, men om ni ändå önskar ge en bröllopspresent skulle ett bidrag till vår bröllopsresa vara varmt uppskattat. Swish-information kommer finnas på presentbordet."
     },
     "If you prefer physical gifts we have a small set of items we have added to our": {
-        sv: "Om ni föredrar fysiska gåvor har vi lagt till några saker på vår"
+        sv: " Om ni föredrar fysiska gåvor har vi lagt till några saker på vår"
     },
     "wishlist": {
         sv: "önskelista"

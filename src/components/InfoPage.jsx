@@ -198,7 +198,7 @@ const InfoPage = () => {
         <Section>
           <SubTitle>{rbt("Gifts")}</SubTitle>
           <Text>
-            {rbt("Your presence is the greatest gift of all. However, should you wish to honor us with a gift, a contribution to our honeymoon fund would be warmly appreciated.")}<br />
+            {rbt("Your presence is the greatest gift of all. However, should you wish to honor us with a gift, a contribution to our honeymoon fund would be warmly appreciated.")}
             <ShowOnlyForLang lang="sv">
               {rbt("If you prefer physical gifts we have a small set of items we have added to our")} <a href="https://www.cervera.se/onskelista/4usj8nhfb7h7" target="_blank" rel="noopener noreferrer" style={{ color: '#3956ffff', textDecoration: 'underline' }}>{rbt("wishlist")}</a>.<br />
               {rbt("We will add more things to the list.")}
