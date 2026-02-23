@@ -22,11 +22,13 @@ const LoadingScreen = ({ isLoading }) => {
             }}
         >
             <h1
-                className="alex-brush shimmer-text"
+                className="shimmer-text"
                 style={{
                     fontSize: 'clamp(4rem, 12vw, 8rem)',
                     margin: 0,
                     userSelect: 'none',
+                    fontFamily: 'Georgia, "Times New Roman", Times, serif',
+                    fontWeight: 'normal'
                 }}
             >
                 M & R
